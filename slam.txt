@@ -1,0 +1,106 @@
+######################################################################
+/////************单目摄像头标定×××××××××××××///////
+1.1.roscore
+2.
+cd ~/orbslam_ws
+source devel/setup.bash
+roslaunch usb_cam usb_cam-test.launch
+3.rosrun camera_calibration cameracalibrator.py --size 9x6 --square 0.03 image:=/usb_cam/image_raw camera:=/usb_cam
+
+/////************启动orb_salm程序×××××××××××××///////
+1.roscore
+2.
+cd ~/orbslam_ws
+source devel/setup.bash
+roslaunch usb_cam usb_cam-test.launch
+3.rosrun ORB_SLAM2 Mono  /home/fan/orbslam_ws/src/ORB_SLAM2/Vocabulary/ORBvoc.txt  /home/fan/orbslam_ws/src/ORB_SLAM2/Examples/ROS/ORB_SLAM2/Asus.yaml
+
+4.跑AR rosrun ORB_SLAM2 MonoAR  /home/fan/orbslam_ws/src/ORB_SLAM2/Vocabulary/ORBvoc.txt  /home/fan/orbslam_ws/src/ORB_SLAM2/Examples/ROS/ORB_SLAM2/Asus.yaml
+×××××××××××××××用 深度相机启动orb_slam*****************
+1.roscore
+2.roslaunch freenect_launch freenect-registered-xyzrgb.launch
+3.rosrun image_view image_view image:=/camera/rgb/image_color
+4.rosrun ORB_SLAM2 RGBD  /home/fan/orbslam_ws/src/ORB_SLAM2/Vocabulary/ORBvoc.txt  /home/fan/orbslam_ws/src/ORB_SLAM2/Examples/ROS/ORB_SLAM2/Asus.yaml
+
+######################################################################
+/////************启动kinect摄像头×××××××××××××///////
+1.roslaunch freenect_launch freenect.launch
+2.rosrun rviz rviz
+或执行
+1.roscore
+2.roslaunch freenect_launch freenect-registered-xyzrgb.launch
+3.rosrun image_view image_view image:=/camera/rgb/image_color
+************
+rosrun rqt_image_view rqt_image_view//在这个界面中可以自动获取图像类型
+rosrun image_view image_view image:=/camera/rgb/image_color//显示原图
+rosrun image_view disparity_view image:=/camera/depth/disparity//显示视差
+######################################################################
+/////************标定kinect--v1摄像头×××××××××××××///////
+1.roslaunch freenect_launch freenect.launch
+/////////////RGB摄像头标定////////////////////
+2.rosrun camera_calibration cameracalibrator.py image:=/camera/rgb/image_raw camera:=/camera/rgb --size 9x6 --square 0.03
+////////////////////////红外摄像头标定//////////////////////
+3.rosrun camera_calibration cameracalibrator.py image:=/camera/ir/image_raw camera:=/camera/ir --size 9x6 --square 0.03
+############################将点云图片转换成octomap图片##########################################
+1.进入~/octomap/octomap_tutor文件夹中
+2.（1）bin/pcd2octomap data/sample.pcd data/sample.bt////不带颜色的转换
+  （2）bin/pcd2colorOctomap data/sample.pcd data/sample.ot/////带颜色的转换
+3.显示点云和octomap地图和显示g2o轨迹
+  （1）pcl_viewer data/sample.pcd
+  （2） octovis data/sample.ot  或  octovis data/sample.bt
+  （3）g2o_viewer data/result_after.g2o
+
+######################################跑RGBDSLAM_v2数据集####################################################################
+1.roscore
+2.roslaunch rgbdslam test_settings.launch bagfile_name:="/home/fang/rgbdslam_ws/src/rgbdslam_v2-kinetic/test/rgbd_dataset_freiburg1_xyz.bag"
+###################################用RGBD相机跑RGBDSLAM#####################################################################
+1.roscore
+2.roslaunch freenect_launch freenect.launch
+3.roslaunch rgbdslam rgbdslam.launch
+##############################################################################################################################
+####################################################跑VINS数据#########################################################################################
+1.roslaunch vins_estimator euroc.launch 
+2.roslaunch vins_estimator vins_rviz.launch
+3.rosbag play ~/vins_ws/src/Dates/MH_01_easy.bag
+########################################################################用小觅相机跑VINS#####################################################
+1.roscore
+2.roslaunch mynt_eye_ros_wrapper mynteye.launch(开启相机)
+3.roslaunch vins_estimator mynteye_s.launch
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
